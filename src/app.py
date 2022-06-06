@@ -12,6 +12,12 @@ def create_app() -> FastAPI:
     _include_routers(app_)
     _include_exception_handlers(app_)
 
+    @app_.on_event('startup')
+    async def on_startup():
+        from src.db.models import Base
+
+        Base.metadata.create_all()
+
     return app_
 
 
