@@ -15,4 +15,6 @@ uvicorn src.app:app --host 0.0.0.0 --port 80
 ```
 
 Docker starting:
-I'm working on it
+```shell
+docker-compose up -d --build
+```
