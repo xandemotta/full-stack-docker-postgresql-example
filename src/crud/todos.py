@@ -1,61 +1,58 @@
-from typing import List, Union
+from typing import List, Optional
 
-from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db import Todo
+from db import Todo
 
 
-def create_todo(
-        db: Session,
-        content: str
+async def create_todo(
+    session: AsyncSession,
+    content: str
 ) -> Todo:
-    db_todo = Todo(content=content)
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    return db_todo
+    todo = Todo(content=content)
+    session.add(todo)
+    await session.commit()
+    await session.refresh(todo)
+    return todo
 
 
-def get_todos(
-        db: Session
+async def get_todos(
+    session: AsyncSession
 ) -> List[Todo]:
-    return db.query(Todo).all()
+    stmt = select(Todo)
+    return (await session.scalars(stmt)).all()
 
 
-def get_todo_by_id(
-        db: Session,
-        todo_id: int
-) -> Union[Todo, None]:
-    return db.query(Todo).where(Todo.id == todo_id).first()
+async def get_todo_by_id(
+    session: AsyncSession,
+    todo_id: int
+) -> Optional[Todo]:
+    stmt = select(Todo).where(Todo.id == todo_id)
+    return await session.scalar(stmt)
 
 
-def toggle_is_done(
-        db: Session,
-        todo_id: int
-) -> Union[Todo, None]:
-    db_todo = get_todo_by_id(db, todo_id)
-    if not db_todo:
-        raise HTTPException(
-            status_code=404,
-            detail='Todo is not found'
-        )
-    db_todo.is_done = not db_todo.is_done
-    db.add(db_todo)
-    db.commit()
-    db.refresh(db_todo)
-    return db_todo
+async def toggle_is_done(
+    session: AsyncSession,
+    todo_id: int
+) -> Optional[Todo]:
+    todo = await get_todo_by_id(session, todo_id)
+    if not todo:
+        return None
+    todo.is_done = not todo.is_done
+    session.add(todo)
+    await session.commit()
+    await session.refresh(todo)
+    return todo
 
 
-def delete(
-        db: Session,
-        todo_id: int
-) -> None:
-    db_todo = get_todo_by_id(db, todo_id)
-    if not db_todo:
-        raise HTTPException(
-            status_code=404,
-            detail='Todo is not found'
-        )
-    db.delete(db_todo)
-    db.commit()
+async def delete(
+    session: AsyncSession,
+    todo_id: int
+) -> bool:
+    todo = await get_todo_by_id(session, todo_id)
+    if not todo:
+        return False
+    await session.delete(todo)
+    await session.commit()
+    return True

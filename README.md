@@ -1,20 +1,21 @@
 # Simple Todo API powered by Python 3 and FastAPI
 
-Standard starting:
-1. Install depends:
+Rename `.env.simple` to `.env` and setting it
+
+To install dependencies use:
 ```shell
-pip install -r requirements.txt
-```
-2. Run:
-```shell
-python main.py
-```
-OR
-```shell
-uvicorn src.app:app --host 0.0.0.0 --port 80
+pip install -U pipenv
+pipenv install
 ```
 
-Docker starting:
+Starting:
 ```shell
-docker-compose up -d --build
+docker-compose up --build
+```
+
+To make new migrations (do it while project is running):
+```shell
+docker-compose exec web /bin/sh
+alembic revision --autogenerate -m "<comment to migration>"
+alembic upgrade head
 ```

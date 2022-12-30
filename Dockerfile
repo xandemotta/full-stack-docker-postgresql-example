@@ -1,12 +1,9 @@
-FROM python:3.10
+FROM python:3.9
+
 WORKDIR /code
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+COPY Pipfile* /code/
+RUN pip install -U pipenv
+RUN pipenv install --system --deploy --ignore-pipfile
 
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install -r requirements.txt
-
-COPY . /code
-
-RUN ["/code/entrypoint.sh"]
+COPY ./src /code/

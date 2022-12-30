@@ -1,13 +1,11 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 
-from .core import engine
-
-Base = declarative_base(bind=engine)
+Base = declarative_base()
 
 
 class Todo(Base):
-    __tablename__ = 'todos'
+    __tablename__ = "todos"
 
     id = Column(Integer, primary_key=True)
     content = Column(String(100))

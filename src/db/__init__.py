@@ -1,2 +1,2 @@
-from .core import get_db
+from .base import get_session
 from .models import Todo

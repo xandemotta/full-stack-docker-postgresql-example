@@ -1,66 +1,71 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db import get_db
-from src.crud import todos
-from src.routers.todo.schemes.request import CreateTodoRequestScheme
-from src.routers.todo.schemes.response import TodoResponseScheme
+from db import get_session
+from crud import todos
+from .schemes.request import CreateTodoRequestScheme
+from .schemes.response import TodoResponseScheme
 
 router = APIRouter(
-    prefix='/api/todo'
+    prefix="/api/todo"
 )
 
 
-@router.post('/create', response_model=TodoResponseScheme)
+@router.post("/create", response_model=TodoResponseScheme)
 async def create(
-        db: Session = Depends(get_db),
+        session: AsyncSession = Depends(get_session),
         *,
         data: CreateTodoRequestScheme
 ):
-    todo = todos.create_todo(db, data.content)
+    todo = await todos.create_todo(session, data.content)
     return todo
 
 
-@router.get('/all', response_model=List[TodoResponseScheme])
+@router.get("/all", response_model=List[TodoResponseScheme])
 async def get_all_todos(
-        db: Session = Depends(get_db)
+        session: AsyncSession = Depends(get_session)
 ):
-    all_todos = todos.get_todos(db)
+    all_todos = await todos.get_todos(session)
     return all_todos
 
 
-@router.get('/get', response_model=TodoResponseScheme)
+@router.get("/get", response_model=TodoResponseScheme)
 async def get_todo(
-        db: Session = Depends(get_db),
+        session: AsyncSession = Depends(get_session),
         *,
         pk: int
 ):
-    todo = todos.get_todo_by_id(db, pk)
+    todo = await todos.get_todo_by_id(session, pk)
     if not todo:
         raise HTTPException(
             status_code=404,
-            detail='Todo is not found'
+            detail="Todo not found"
         )
     return todo
 
 
-@router.put('/toggle_is_done', response_model=TodoResponseScheme)
+@router.put("/toggle_is_done", response_model=TodoResponseScheme)
 async def toggle_is_done(
-        db: Session = Depends(get_db),
+        session: AsyncSession = Depends(get_session),
         *,
         pk: int
 ):
-    todo = todos.toggle_is_done(db, pk)
+    todo = await todos.toggle_is_done(session, pk)
+    if not todo:
+        raise HTTPException(
+            status_code=404,
+            detail="Todo not found"
+        )
     return todo
 
 
-@router.delete('/delete')
+@router.delete("/delete")
 async def delete(
-        db: Session = Depends(get_db),
+        session: AsyncSession = Depends(get_session),
         *,
         pk: int
 ):
-    todos.delete(db, pk)
-    return {'ok': True}
+    ok = await todos.delete(session, pk)
+    return {"ok": ok}
