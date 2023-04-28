@@ -1,4 +1,4 @@
-# Simple Todo API written in Python 3 (FastAPI) for Backend and NodeJS (Vue) for Frontend
+# Simple Todo site written in Python 3 (FastAPI) for Backend and NodeJS (Vue) for Frontend
 
 Running:
 1. Rename `.env.simple` to `.env` and setting it
