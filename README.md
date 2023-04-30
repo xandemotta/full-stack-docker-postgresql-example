@@ -1,21 +1,15 @@
-# Simple Todo API powered by Python 3 and FastAPI
+# Simple Todo site written in Python 3 (FastAPI) for Backend and NodeJS (Vue) for Frontend
 
-Rename `.env.simple` to `.env` and setting it
+1. Running via Docker:
 
-To install dependencies use:
-```shell
-pip install -U pipenv
-pipenv install
-```
-
-Starting:
 ```shell
 docker-compose up --build
 ```
 
-To make new migrations (do it while project is running):
+2. Make new migrations (do it while project is running):
+
 ```shell
-docker-compose exec web /bin/sh
+docker-compose exec backend /bin/sh
 alembic revision --autogenerate -m "<comment to migration>"
 alembic upgrade head
 ```

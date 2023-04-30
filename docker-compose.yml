@@ -3,21 +3,37 @@ version: '3'
 services:
   db:
     image: postgres
-    restart: always
+    restart: unless-stopped
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     env_file:
       - .env
 
-  web:
-    build: .
-    restart: always
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
     command: bash -c "alembic upgrade head && uvicorn app:app --host 0.0.0.0 --port 8000"
     volumes:
-      - ./src:/code
+      - ./backend/src:/code
     ports:
       - "8000:8000"
-    env_file:
-      - .env
+    env_file: .env
+  
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    command: http-server dist
+    volumes:
+      - ./frontend:/code
+    ports:
+      - "80:8080"
+    env_file: .env
+
+volumes:
+  postgres_data:
