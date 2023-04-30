@@ -3,6 +3,7 @@
 1. Running via Docker:
 
 ```shell
+docker-compose network create todo (just once)
 docker-compose up --build
 ```
 

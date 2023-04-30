@@ -1,1 +1,1 @@
-export const apiUrl = 'http://localhost:8000/api'
+export const apiUrl = 'http://todo_backend:8000/api'
