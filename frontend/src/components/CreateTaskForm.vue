@@ -34,9 +34,12 @@ export default {
         :rules="contentRules"
         v-model="content"
         label="Task content"
+        variant="outlined"
         required
       ></v-text-field>
-      <v-btn type="submit" block class="mt-2" @click.prevent="submitForm">Submit</v-btn>
+      <v-btn variant="outlined" type="submit" block class="mt-2" @click.prevent="submitForm"
+        >Submit</v-btn
+      >
     </v-form>
   </v-sheet>
 </template>

@@ -1,6 +1,5 @@
 import axios from 'axios'
-
-const apiUrl = 'http://localhost:8000/api'
+import { apiUrl } from '@/consts'
 
 const todoAPI = {
   headers: {
