@@ -1,46 +1,46 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from db import get_session
-from crud import todos
 from schemes import Ok, Task, ListTasks, ReqCreateTask, ReqToggleDoneTask
+from services import ServicesFactory
+from core import get_services
 
 router = APIRouter(prefix="/todo")
 
 
 @router.post("/create", response_model=Task)
-async def create(
-    session: AsyncSession = Depends(get_session), *, data: ReqCreateTask
+async def create_task(
+    services: ServicesFactory = Depends(get_services), *, data: ReqCreateTask
 ):
-    todo = await todos.create_todo(session, data.content)
-    return todo
+    task = await services.todo_service.create(data)
+    return task
 
 
 @router.get("/all", response_model=ListTasks)
-async def get_all_todos(session: AsyncSession = Depends(get_session)):
-    all_todos = await todos.get_todos(session)
-    return all_todos
+async def get_all_tasks(services: ServicesFactory = Depends(get_services)):
+    todos = await services.todo_service.get_all()
+    return todos
 
 
 @router.get("/get", response_model=Task)
-async def get_todo(session: AsyncSession = Depends(get_session), *, pk: int):
-    todo = await todos.get_todo_by_id(session, pk)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
+async def get_task(services: ServicesFactory = Depends(get_services), *, pk: int):
+    task = await services.todo_service.get(pk)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
 
 
-@router.put("/toggle_is_done", response_model=Task)
-async def toggle_is_done(
-    session: AsyncSession = Depends(get_session), *, data: ReqToggleDoneTask 
+@router.put("/toggle_done", response_model=Task)
+async def toggle_done_task(
+    services: ServicesFactory = Depends(get_services), *, data: ReqToggleDoneTask 
 ):
-    todo = await todos.toggle_is_done(session, data.pk)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
+    task = await services.todo_service.toggle_done(data)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task
 
 
 @router.delete("/delete", response_model=Ok)
-async def delete(session: AsyncSession = Depends(get_session), *, pk: int):
-    ok = await todos.delete(session, pk)
+async def delete_task(services: ServicesFactory = Depends(get_services), *, pk: int):
+    ok = await services.todo_service.delete(pk)
     return {"ok": ok}
