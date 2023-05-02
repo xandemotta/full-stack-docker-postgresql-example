@@ -5,7 +5,7 @@ from db import get_session
 from crud import todos
 from schemes import Ok, Task, ListTasks, ReqCreateTask, ReqToggleDoneTask
 
-router = APIRouter(prefix="/api/todo")
+router = APIRouter(prefix="/todo")
 
 
 @router.post("/create", response_model=Task)
