@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
 def _include_routers(app_: FastAPI):
     """Include routers to application"""
 
-    from routers.todo.router import router as todo_router
+    from api.todo.router import router as todo_router
 
     app_.include_router(todo_router)
 
