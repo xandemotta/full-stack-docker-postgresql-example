@@ -13,19 +13,19 @@ const todoAPI = {
   },
   async createTask(content) {
     let data = await axios
-      .post(`${apiUrl}/todo/create`, { content: content }, { headers: this.headers })
+      .post(`${apiUrl}/todo/create/`, { content: content }, { headers: this.headers })
       .then((res) => res.data)
     return data
   },
   async delete(taskId) {
     let data = await axios
-      .delete(`${apiUrl}/todo/delete`, { params: { pk: taskId }, headers: this.headers })
+      .delete(`${apiUrl}/todo/delete/`, { params: { pk: taskId }, headers: this.headers })
       .then((res) => res.data)
     return data
   },
   async markDone(taskId) {
     let data = await axios
-      .put(`${apiUrl}/todo/toggle_is_done`, { pk: taskId }, { headers: this.headers })
+      .put(`${apiUrl}/todo/toggle_done/`, { pk: taskId }, { headers: this.headers })
       .then((res) => res.data)
     return data
   }
