@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   db:
@@ -30,7 +30,7 @@ services:
       todo:
         aliases:
           - todo_backend
-  
+
   frontend:
     build:
       context: ./frontend
